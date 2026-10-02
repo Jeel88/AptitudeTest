@@ -10,7 +10,8 @@ import {
   Award,
   Trophy,
   History,
-  Settings
+  Settings,
+  Menu
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -106,25 +107,26 @@ export default function Navbar({
       </div>
 
       {/* Right Side: Streak Badge & Profile Actions */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
         {/* Daily Streak Badge */}
         <div 
           title="Current Daily Practice Streak"
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.4rem',
-            background: 'rgba(245, 158, 11, 0.12)',
-            border: '1px solid rgba(245, 158, 11, 0.3)',
-            padding: '0.4rem 0.85rem',
+            gap: '0.35rem',
+            background: 'rgba(245, 158, 11, 0.14)',
+            border: '1px solid rgba(245, 158, 11, 0.35)',
+            padding: '0.35rem 0.75rem',
             borderRadius: 'var(--radius-full)',
             color: '#fbbf24',
-            fontSize: '0.85rem',
-            fontWeight: 700
+            fontSize: '0.82rem',
+            fontWeight: 800,
+            whiteSpace: 'nowrap'
           }}
         >
-          <Flame size={16} fill="#fbbf24" color="#fbbf24" />
-          <span>{userStats?.streak || 1} Day Streak</span>
+          <Flame size={17} fill="#f97316" color="#f97316" />
+          <span>{userStats?.streak || 1} <span className="streak-text">Streak</span></span>
         </div>
 
         {/* Log In Button / Profile Dropdown Menu */}
@@ -132,31 +134,32 @@ export default function Navbar({
           <button
             onClick={() => onOpenAuthModal('login')}
             className="btn btn-vscode-blue"
-            style={{ padding: '0.5rem 1.1rem', fontSize: '0.875rem' }}
+            style={{ padding: '0.45rem 0.95rem', fontSize: '0.85rem' }}
           >
-            <LogIn size={16} />
+            <LogIn size={15} />
             <span>Log In</span>
           </button>
         ) : (
-          /* Separated Menu Options Dropdown */
+          /* User Profile Dropdown */
           <div style={{ position: 'relative' }}>
             <button
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
               className="btn btn-secondary"
               style={{
-                padding: '0.35rem 0.75rem',
+                padding: '0.35rem 0.65rem',
                 fontSize: '0.85rem',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.5rem'
+                gap: '0.45rem'
               }}
+              title="User Account & Options"
             >
               <img 
                 src={currentUser.avatar} 
                 alt="Avatar" 
-                style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} 
+                style={{ width: '22px', height: '22px', borderRadius: '50%', objectFit: 'cover' }} 
               />
-              <span style={{ fontWeight: 700, color: '#ffffff' }}>{currentUser.name}</span>
+              <span className="hide-mobile" style={{ fontWeight: 700, color: '#ffffff' }}>{currentUser.name}</span>
               <ChevronDown size={14} />
             </button>
 

@@ -31,17 +31,6 @@ export const CATEGORIES = [
     glowColor: 'rgba(52, 211, 153, 0.25)',
     description: 'Sharpen Grammar, Vocabulary, Comprehension & Verbal Logic.',
     topics: ['Synonyms & Antonyms', 'Error Spotting', 'Sentence Completion', 'Reading Comprehension', 'Idioms & Phrases']
-  },
-  {
-    id: 'technical',
-    name: 'Technical & CS Aptitude',
-    icon: 'Code2',
-    image: '/images/cs.png',
-    color: '#fbbf24',
-    gradient: 'linear-gradient(135deg, #d97706 0%, #fbbf24 100%)',
-    glowColor: 'rgba(251, 191, 36, 0.25)',
-    description: 'Test Core Computer Science, Data Structures, Pseudo-code & OS Concepts.',
-    topics: ['Data Structures', 'Time Complexity', 'Bit Manipulation', 'SQL & Databases', 'Networking Basics']
   }
 ];
 

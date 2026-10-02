@@ -59,6 +59,7 @@ export default function App() {
   // Modals & Drawers
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [testConfigModalOpen, setTestConfigModalOpen] = useState(false);
+  const [modalInitialConfig, setModalInitialConfig] = useState({});
   const [scratchpadOpen, setScratchpadOpen] = useState(false);
   const [formulasOpen, setFormulasOpen] = useState(false);
 
@@ -127,11 +128,19 @@ export default function App() {
     setActiveView('home');
   };
 
-  // Protected Action: Category Selection -> Open Selector Modal
-  const handleOpenCategory = (categoryId) => {
+  // Protected Action: Category Selection -> Open Selector Modal with card config
+  const handleOpenCategory = (categoryId, initialConfig = {}) => {
     requireAuth(() => {
       setSelectedCategoryId(categoryId);
+      setModalInitialConfig(initialConfig);
       setTestConfigModalOpen(true);
+    });
+  };
+
+  // Protected Action: Direct Start Quiz with Card Config
+  const handleStartDirectQuiz = (config) => {
+    requireAuth(() => {
+      handleStartTest(config);
     });
   };
 
@@ -315,42 +324,42 @@ export default function App() {
                 {/* Clean App Showcase Preview Window Mockup */}
                 <div className="editor-mockup-window" style={{ maxWidth: '960px', margin: '0 auto' }}>
                   {/* Clean Titlebar */}
-                  <div className="editor-titlebar">
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                      <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444' }} />
-                      <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#f59e0b' }} />
-                      <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#10b981' }} />
+                  <div className="editor-titlebar" style={{ padding: '0.5rem 0.85rem' }}>
+                    <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ef4444' }} />
+                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f59e0b' }} />
+                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#10b981' }} />
                     </div>
 
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#e2e8f0', letterSpacing: '0.5px' }}>
-                      Interactive Aptitude Quiz Workspace
+                    <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#e2e8f0', letterSpacing: '0.3px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      Aptitude Quiz Workspace
                     </span>
 
-                    <span className="badge badge-easy" style={{ fontSize: '0.7rem' }}>Live Session</span>
+                    <span className="badge badge-easy" style={{ fontSize: '0.65rem', whiteSpace: 'nowrap', padding: '0.2rem 0.5rem' }}>Live Session</span>
                   </div>
 
                   {/* Window Content */}
-                  <div style={{ padding: '1.5rem', textAlign: 'left', background: '#070a14', display: 'grid', gridTemplateColumns: '1fr 300px', gap: '1.5rem' }}>
+                  <div style={{ padding: '1.25rem', textAlign: 'left', background: '#070a14', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
                     <div>
                       <div style={{ color: '#64748b', fontSize: '0.8rem', fontFamily: 'var(--font-mono)', marginBottom: '0.5rem' }}>
                         // QUESTION 01 [Work & Time - Medium Level]
                       </div>
-                      <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#ffffff', marginBottom: '1rem', lineHeight: '1.5' }}>
+                      <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#ffffff', marginBottom: '0.85rem', lineHeight: '1.45' }}>
                         A can complete a piece of work in 12 days, and B in 18 days. A leaves 3 days before completion. What is the total time taken?
                       </h3>
 
                       {/* Options Preview */}
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '1rem' }}>
-                        <div style={{ padding: '0.5rem 0.75rem', background: '#12192c', borderRadius: '6px', fontSize: '0.85rem', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.45rem', marginBottom: '0.85rem' }}>
+                        <div style={{ padding: '0.45rem 0.65rem', background: '#12192c', borderRadius: '6px', fontSize: '0.82rem', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.08)' }}>
                           A. 8.4 days
                         </div>
-                        <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(16, 185, 129, 0.2)', borderRadius: '6px', fontSize: '0.85rem', color: '#34d399', border: '1px solid #10b981', fontWeight: 700 }}>
+                        <div style={{ padding: '0.45rem 0.65rem', background: 'rgba(16, 185, 129, 0.2)', borderRadius: '6px', fontSize: '0.82rem', color: '#34d399', border: '1px solid #10b981', fontWeight: 700 }}>
                           B. 9 days ✓
                         </div>
-                        <div style={{ padding: '0.5rem 0.75rem', background: '#12192c', borderRadius: '6px', fontSize: '0.85rem', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <div style={{ padding: '0.45rem 0.65rem', background: '#12192c', borderRadius: '6px', fontSize: '0.82rem', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.08)' }}>
                           C. 10 days
                         </div>
-                        <div style={{ padding: '0.5rem 0.75rem', background: '#12192c', borderRadius: '6px', fontSize: '0.85rem', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <div style={{ padding: '0.45rem 0.65rem', background: '#12192c', borderRadius: '6px', fontSize: '0.82rem', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.08)' }}>
                           D. 7.5 days
                         </div>
                       </div>
@@ -397,56 +406,38 @@ export default function App() {
             </div>
 
             {/* MIDDLE GLOWING CTA BANNER */}
-            <div
-              style={{
-                maxWidth: '960px',
-                margin: '3rem auto 1rem',
-                padding: '2.25rem 2.5rem',
-                borderRadius: '14px',
-                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(0, 120, 212, 0.35) 50%, rgba(124, 58, 237, 0.25) 100%)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                boxShadow: '0 15px 40px rgba(0, 0, 0, 0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '1.5rem',
-                position: 'relative',
-                zIndex: 2,
-                backdropFilter: 'blur(12px)'
-              }}
-            >
-              <div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#ffffff', letterSpacing: '-0.3px', marginBottom: '0.25rem' }}>
+            <div className="cta-banner-card">
+              <div style={{ flex: '1 1 240px' }}>
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.3px', marginBottom: '0.35rem' }}>
                   Start practicing aptitude quizzes for free
                 </h3>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.65rem' }}>
-                <p style={{ fontSize: '0.875rem', color: '#e2e8f0', fontWeight: 500 }}>
+                <p style={{ fontSize: '0.88rem', color: '#cbd5e1', fontWeight: 500 }}>
                   No trial. No credit card required. Free account access.
                 </p>
+              </div>
 
+              <div className="cta-banner-btn-wrapper">
                 <button
                   onClick={handleStartGrandMock}
                   style={{
-                    padding: '0.55rem 1.15rem',
-                    fontSize: '0.875rem',
+                    padding: '0.65rem 1.4rem',
+                    fontSize: '0.9rem',
                     fontWeight: 700,
-                    background: 'rgba(15, 23, 42, 0.85)',
-                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    background: 'linear-gradient(135deg, #0078d4 0%, #0284c7 100%)',
+                    border: 'none',
                     color: '#ffffff',
-                    borderRadius: '6px',
+                    borderRadius: '10px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.5rem',
+                    gap: '0.6rem',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease'
+                    boxShadow: '0 4px 16px rgba(0, 120, 212, 0.4)',
+                    transition: 'all 0.2s ease',
+                    whiteSpace: 'nowrap'
                   }}
-                  className="btn-secondary-dark"
                 >
                   <span>{!currentUser ? 'Log In to Try Free' : 'Try Free'}</span>
-                  <ChevronDown size={14} />
+                  <ArrowRight size={17} />
                 </button>
               </div>
             </div>
@@ -464,7 +455,7 @@ export default function App() {
 
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
                 gap: '1.5rem'
               }}>
                 {CATEGORIES.map(cat => {
@@ -475,6 +466,7 @@ export default function App() {
                       category={cat}
                       questionCount={count}
                       onSelectCategory={handleOpenCategory}
+                      onStartDirectQuiz={handleStartDirectQuiz}
                     />
                   );
                 })}
@@ -527,7 +519,7 @@ export default function App() {
 
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
               gap: '1.5rem'
             }}>
               {CATEGORIES.map(cat => {
@@ -538,6 +530,7 @@ export default function App() {
                     category={cat}
                     questionCount={count}
                     onSelectCategory={handleOpenCategory}
+                    onStartDirectQuiz={handleStartDirectQuiz}
                   />
                 );
               })}
@@ -601,6 +594,7 @@ export default function App() {
       {testConfigModalOpen && currentUser && (
         <TestModeSelectorModal
           selectedCategoryId={selectedCategoryId}
+          initialConfig={modalInitialConfig}
           onClose={() => setTestConfigModalOpen(false)}
           onStartTest={handleStartTest}
         />

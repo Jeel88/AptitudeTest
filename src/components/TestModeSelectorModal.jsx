@@ -11,16 +11,20 @@ import {
 } from 'lucide-react';
 import { CATEGORIES } from '../data/questionsData';
 
-export default function TestModeSelectorModal({ selectedCategoryId, onClose, onStartTest }) {
+export default function TestModeSelectorModal({ selectedCategoryId, initialConfig = {}, onClose, onStartTest }) {
   const categoryInfo = CATEGORIES.find(c => c.id === selectedCategoryId) || {
     name: 'All Topics Grand Mock Test',
     description: 'Comprehensive evaluation across Quantitative, Reasoning, Verbal & CS Aptitude.'
   };
 
-  const [mode, setMode] = useState('timed'); // 'timed' | 'practice' | 'speedrun'
-  const [difficulty, setDifficulty] = useState('all'); // 'all' | 'Easy' | 'Medium' | 'Hard'
-  const [questionCount, setQuestionCount] = useState(10);
-  const [timeLimitMinutes, setTimeLimitMinutes] = useState(15);
+  const [mode, setMode] = useState(initialConfig.mode || 'timed'); // 'timed' | 'practice' | 'speedrun'
+  const [difficulty, setDifficulty] = useState(initialConfig.difficulty || 'all'); // 'all' | 'Easy' | 'Medium' | 'Hard'
+  const [questionCount, setQuestionCount] = useState(initialConfig.questionCount || 10);
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState(
+    initialConfig.timeLimitMinutes !== undefined && initialConfig.timeLimitMinutes !== null
+      ? initialConfig.timeLimitMinutes 
+      : 15
+  );
 
   const handleStart = () => {
     onStartTest({

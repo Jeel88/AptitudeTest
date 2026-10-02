@@ -374,6 +374,31 @@ pre.code-block {
   font-weight: 700;
 }
 
+/* CTA Banner Component Styles */
+.cta-banner-card {
+  max-width: 960px;
+  margin: 2.5rem auto 1.5rem;
+  padding: 1.75rem 2.25rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(0, 120, 212, 0.3) 50%, rgba(124, 58, 237, 0.2) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.cta-banner-btn-wrapper {
+  display: flex;
+  align-items: center;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .modal-content {
@@ -381,5 +406,27 @@ pre.code-block {
   }
   .hide-mobile {
     display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  header {
+    padding: 0.5rem 0.85rem !important;
+  }
+  .streak-text {
+    display: none !important;
+  }
+  .cta-banner-card {
+    margin: 1.5rem 0.85rem !important;
+    padding: 1.25rem 1rem !important;
+    border-radius: 12px !important;
+  }
+  .cta-banner-btn-wrapper {
+    width: 100% !important;
+  }
+  .cta-banner-btn-wrapper button {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.7rem 1rem !important;
   }
 }
