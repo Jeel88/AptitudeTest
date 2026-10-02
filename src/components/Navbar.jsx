@@ -24,110 +24,117 @@ export default function Navbar({
   userStats
 }) {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleMobileNav = (view) => {
+    onNavigate(view);
+    setMobileMenuOpen(false);
+  };
 
   return (
-    <header style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 50,
-      background: 'rgba(6, 9, 19, 0.95)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
-      borderBottom: '1px solid var(--border-color)',
-      padding: '0.75rem 2rem',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      boxShadow: 'var(--shadow-sm)'
-    }}>
-      {/* Left: Logo & Quiz Navigation Links */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-        {/* Logo */}
-        <div 
-          onClick={() => onNavigate('home')} 
-          style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '0.65rem', 
-            cursor: 'pointer',
-            userSelect: 'none'
-          }}
-        >
-          <div style={{
-            width: '34px',
-            height: '34px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, #0078d4 0%, #06b6d4 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#ffffff',
-            boxShadow: '0 4px 12px rgba(0, 120, 212, 0.4)'
-          }}>
-            <Zap size={20} fill="#ffffff" />
+    <>
+      <header style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        background: 'rgba(6, 9, 19, 0.95)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderBottom: '1px solid var(--border-color)',
+        padding: '0.75rem 2rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        boxShadow: 'var(--shadow-sm)'
+      }}>
+        {/* Left: Logo & Quiz Navigation Links */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+          {/* Logo */}
+          <div 
+            onClick={() => onNavigate('home')} 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.65rem', 
+              cursor: 'pointer',
+              userSelect: 'none'
+            }}
+          >
+            <div style={{
+              width: '34px',
+              height: '34px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #1e90ff 0%, #00bfff 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#ffffff',
+              boxShadow: '0 4px 12px rgba(30, 144, 255, 0.4)'
+            }}>
+              <Zap size={20} fill="#ffffff" />
+            </div>
+            <span style={{ 
+              fontSize: '1.2rem', 
+              fontWeight: 800, 
+              color: '#ffffff',
+              letterSpacing: '-0.3px',
+              fontFamily: 'var(--font-sans)'
+            }}>
+              AptiMaster
+            </span>
           </div>
-          <span style={{ 
-            fontSize: '1.2rem', 
-            fontWeight: 800, 
-            color: '#ffffff',
-            letterSpacing: '-0.3px',
-            fontFamily: 'var(--font-sans)'
-          }}>
-            AptiMaster
-          </span>
+
+          {/* Desktop Quiz Nav Links */}
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }} className="hide-mobile">
+            <button 
+              onClick={() => onNavigate('home')}
+              className={`nav-link ${activeView === 'home' ? 'active' : ''}`}
+            >
+              Home
+            </button>
+            <button 
+              onClick={() => onNavigate('practice')}
+              className={`nav-link ${activeView === 'practice' ? 'active' : ''}`}
+            >
+              Practice Quizzes
+            </button>
+            <button 
+              onClick={() => onNavigate('analytics')}
+              className={`nav-link ${activeView === 'analytics' ? 'active' : ''}`}
+            >
+              Dashboard
+            </button>
+            <button 
+              onClick={() => onNavigate('about')}
+              className={`nav-link ${activeView === 'about' ? 'active' : ''}`}
+            >
+              About Us
+            </button>
+          </nav>
         </div>
 
-        {/* Quiz Nav Links */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }} className="hide-mobile">
-          <button 
-            onClick={() => onNavigate('home')}
-            className={`nav-link ${activeView === 'home' ? 'active' : ''}`}
+        {/* Right Side: Streak Badge, Profile & Mobile Menu Toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+          {/* Daily Streak Badge */}
+          <div 
+            title="Current Daily Practice Streak"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              background: 'rgba(245, 158, 11, 0.14)',
+              border: '1px solid rgba(245, 158, 11, 0.35)',
+              padding: '0.35rem 0.75rem',
+              borderRadius: 'var(--radius-full)',
+              color: '#fbbf24',
+              fontSize: '0.82rem',
+              fontWeight: 800,
+              whiteSpace: 'nowrap'
+            }}
           >
-            Home
-          </button>
-          <button 
-            onClick={() => onNavigate('practice')}
-            className={`nav-link ${activeView === 'practice' ? 'active' : ''}`}
-          >
-            Practice Quizzes
-          </button>
-          <button 
-            onClick={() => onNavigate('analytics')}
-            className={`nav-link ${activeView === 'analytics' ? 'active' : ''}`}
-          >
-            Dashboard
-          </button>
-          <button 
-            onClick={() => onNavigate('about')}
-            className={`nav-link ${activeView === 'about' ? 'active' : ''}`}
-          >
-            About Us
-          </button>
-        </nav>
-      </div>
-
-      {/* Right Side: Streak Badge & Profile Actions */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-        {/* Daily Streak Badge */}
-        <div 
-          title="Current Daily Practice Streak"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            background: 'rgba(245, 158, 11, 0.14)',
-            border: '1px solid rgba(245, 158, 11, 0.35)',
-            padding: '0.35rem 0.75rem',
-            borderRadius: 'var(--radius-full)',
-            color: '#fbbf24',
-            fontSize: '0.82rem',
-            fontWeight: 800,
-            whiteSpace: 'nowrap'
-          }}
-        >
-          <Flame size={17} fill="#f97316" color="#f97316" />
-          <span>{userStats?.streak || 1} <span className="streak-text">Streak</span></span>
-        </div>
+            <Flame size={17} fill="#f97316" color="#f97316" />
+            <span>{userStats?.streak || 1} <span className="streak-text">Streak</span></span>
+          </div>
 
         {/* Log In Button / Profile Dropdown Menu */}
         {!currentUser ? (
@@ -243,7 +250,68 @@ export default function Navbar({
             )}
           </div>
         )}
+
+        {/* Mobile Hamburger Menu Toggle Button */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="btn btn-secondary show-mobile"
+          style={{ padding: '0.45rem', borderRadius: '8px' }}
+          title="Toggle Navigation Menu"
+        >
+          <Menu size={20} color="#ffffff" />
+        </button>
       </div>
     </header>
+
+    {/* Mobile Navigation Dropdown Drawer */}
+    {mobileMenuOpen && (
+      <div 
+        className="glass-panel animate-fade-in show-mobile"
+        style={{
+          position: 'sticky',
+          top: '57px',
+          zIndex: 49,
+          padding: '0.75rem 1rem',
+          margin: '0 0.5rem 0.5rem',
+          borderRadius: '12px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.5rem',
+          background: 'rgba(11, 16, 29, 0.98)',
+          border: '1px solid rgba(30, 144, 255, 0.3)',
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.5)'
+        }}
+      >
+        <button 
+          onClick={() => handleMobileNav('home')}
+          className={`nav-link ${activeView === 'home' ? 'active' : ''}`}
+          style={{ width: '100%', justifyContent: 'flex-start', padding: '0.6rem 0.85rem' }}
+        >
+          Home
+        </button>
+        <button 
+          onClick={() => handleMobileNav('practice')}
+          className={`nav-link ${activeView === 'practice' ? 'active' : ''}`}
+          style={{ width: '100%', justifyContent: 'flex-start', padding: '0.6rem 0.85rem' }}
+        >
+          Practice Quizzes
+        </button>
+        <button 
+          onClick={() => handleMobileNav('analytics')}
+          className={`nav-link ${activeView === 'analytics' ? 'active' : ''}`}
+          style={{ width: '100%', justifyContent: 'flex-start', padding: '0.6rem 0.85rem' }}
+        >
+          Dashboard
+        </button>
+        <button 
+          onClick={() => handleMobileNav('about')}
+          className={`nav-link ${activeView === 'about' ? 'active' : ''}`}
+          style={{ width: '100%', justifyContent: 'flex-start', padding: '0.6rem 0.85rem' }}
+        >
+          About Us
+        </button>
+      </div>
+    )}
+  </>
   );
 }
