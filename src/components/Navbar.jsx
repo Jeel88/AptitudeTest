@@ -5,7 +5,12 @@ import {
   LogIn,
   LogOut,
   ChevronDown,
-  BarChart3
+  BarChart3,
+  User,
+  Award,
+  Trophy,
+  History,
+  Settings
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -13,6 +18,7 @@ export default function Navbar({
   activeView,
   currentUser,
   onOpenAuthModal,
+  onOpenProfileModal,
   onLogout,
   userStats
 }) {
@@ -33,7 +39,7 @@ export default function Navbar({
       justifyContent: 'space-between',
       boxShadow: 'var(--shadow-sm)'
     }}>
-      {/* Left: Logo & Navigation Links (Home, Practice Quizzes, Dashboard, About Us) */}
+      {/* Left: Logo & Quiz Navigation Links */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
         {/* Logo */}
         <div 
@@ -70,7 +76,7 @@ export default function Navbar({
           </span>
         </div>
 
-        {/* Quiz Navigation Links (No Formulas link) */}
+        {/* Quiz Nav Links */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }} className="hide-mobile">
           <button 
             onClick={() => onNavigate('home')}
@@ -99,7 +105,7 @@ export default function Navbar({
         </nav>
       </div>
 
-      {/* Right Side: ONLY Streak Badge & Log In Button / Profile */}
+      {/* Right Side: Streak Badge & Profile Actions */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
         {/* Daily Streak Badge */}
         <div 
@@ -121,7 +127,7 @@ export default function Navbar({
           <span>{userStats?.streak || 1} Day Streak</span>
         </div>
 
-        {/* ONLY Log In Button / Profile (No search, no volume, no light mode) */}
+        {/* Log In Button / Profile Dropdown Menu */}
         {!currentUser ? (
           <button
             onClick={() => onOpenAuthModal('login')}
@@ -132,7 +138,7 @@ export default function Navbar({
             <span>Log In</span>
           </button>
         ) : (
-          /* User Profile Avatar when logged in */
+          /* Separated Menu Options Dropdown */
           <div style={{ position: 'relative' }}>
             <button
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -161,7 +167,7 @@ export default function Navbar({
                   position: 'absolute',
                   right: 0,
                   top: '110%',
-                  width: '220px',
+                  width: '240px',
                   padding: '0.75rem',
                   zIndex: 60,
                   boxShadow: 'var(--shadow-lg)'
@@ -172,20 +178,63 @@ export default function Navbar({
                   <span style={{ fontSize: '0.75rem', color: '#38bdf8' }}>{currentUser.level}</span>
                 </div>
 
+                {/* Separated Options */}
+                <button
+                  onClick={() => { onOpenProfileModal('profile'); setUserDropdownOpen(false); }}
+                  className="btn btn-ghost"
+                  style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.85rem', padding: '0.4rem 0.6rem' }}
+                >
+                  <User size={15} /> Edit Personal Info
+                </button>
+
+                <button
+                  onClick={() => { onOpenProfileModal('certificate'); setUserDropdownOpen(false); }}
+                  className="btn btn-ghost"
+                  style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.85rem', padding: '0.4rem 0.6rem' }}
+                >
+                  <Award size={15} /> My Certificates
+                </button>
+
+                <button
+                  onClick={() => { onOpenProfileModal('achievements'); setUserDropdownOpen(false); }}
+                  className="btn btn-ghost"
+                  style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.85rem', padding: '0.4rem 0.6rem' }}
+                >
+                  <Trophy size={15} /> Badges & Achievements
+                </button>
+
+                <button
+                  onClick={() => { onOpenProfileModal('history'); setUserDropdownOpen(false); }}
+                  className="btn btn-ghost"
+                  style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.85rem', padding: '0.4rem 0.6rem' }}
+                >
+                  <History size={15} /> Quiz History Logs
+                </button>
+
                 <button
                   onClick={() => { onNavigate('analytics'); setUserDropdownOpen(false); }}
                   className="btn btn-ghost"
                   style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.85rem', padding: '0.4rem 0.6rem' }}
                 >
-                  <BarChart3 size={16} /> Dashboard & Stats
+                  <BarChart3 size={15} /> Dashboard & Analytics
                 </button>
+
+                <button
+                  onClick={() => { onOpenProfileModal('preferences'); setUserDropdownOpen(false); }}
+                  className="btn btn-ghost"
+                  style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.85rem', padding: '0.4rem 0.6rem' }}
+                >
+                  <Settings size={15} /> Account Preferences
+                </button>
+
+                <div style={{ height: '1px', background: 'var(--border-color)', margin: '0.4rem 0' }} />
 
                 <button
                   onClick={() => { onLogout(); setUserDropdownOpen(false); }}
                   className="btn btn-ghost"
                   style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.85rem', padding: '0.4rem 0.6rem', color: '#f87171' }}
                 >
-                  <LogOut size={16} /> Log Out
+                  <LogOut size={15} /> Log Out
                 </button>
               </div>
             )}

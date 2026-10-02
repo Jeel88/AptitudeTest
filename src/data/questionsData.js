@@ -3,17 +3,21 @@ export const CATEGORIES = [
     id: 'quant',
     name: 'Quantitative Aptitude',
     icon: 'Calculator',
-    color: '#6366f1',
-    gradient: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+    image: '/images/quant.png',
+    color: '#38bdf8',
+    gradient: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
+    glowColor: 'rgba(56, 189, 248, 0.25)',
     description: 'Master Numbers, Percentages, Algebra, Geometry & Data Interpretation.',
-    topics: ['Work & Time', 'Speed & Distance', 'Profit & Loss', 'Probability', 'Permutations & Combinations', 'Data Interpretation']
+    topics: ['Work & Time', 'Speed & Distance', 'Profit & Loss', 'Probability', 'Combinatorics', 'Data Interpretation']
   },
   {
     id: 'logical',
     name: 'Logical Reasoning',
     icon: 'Brain',
-    color: '#ec4899',
-    gradient: 'linear-gradient(135deg, #ec4899 0%, #d946ef 100%)',
+    image: '/images/logical.png',
+    color: '#c084fc',
+    gradient: 'linear-gradient(135deg, #9333ea 0%, #c084fc 100%)',
+    glowColor: 'rgba(192, 132, 252, 0.25)',
     description: 'Enhance Puzzles, Blood Relations, Syllogisms & Pattern Recognition.',
     topics: ['Blood Relations', 'Syllogisms', 'Coding-Decoding', 'Series Completion', 'Seating Arrangements']
   },
@@ -21,8 +25,10 @@ export const CATEGORIES = [
     id: 'verbal',
     name: 'Verbal Ability',
     icon: 'BookOpen',
-    color: '#10b981',
-    gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    image: '/images/verbal.png',
+    color: '#34d399',
+    gradient: 'linear-gradient(135deg, #059669 0%, #34d399 100%)',
+    glowColor: 'rgba(52, 211, 153, 0.25)',
     description: 'Sharpen Grammar, Vocabulary, Comprehension & Verbal Logic.',
     topics: ['Synonyms & Antonyms', 'Error Spotting', 'Sentence Completion', 'Reading Comprehension', 'Idioms & Phrases']
   },
@@ -30,8 +36,10 @@ export const CATEGORIES = [
     id: 'technical',
     name: 'Technical & CS Aptitude',
     icon: 'Code2',
-    color: '#f59e0b',
-    gradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+    image: '/images/cs.png',
+    color: '#fbbf24',
+    gradient: 'linear-gradient(135deg, #d97706 0%, #fbbf24 100%)',
+    glowColor: 'rgba(251, 191, 36, 0.25)',
     description: 'Test Core Computer Science, Data Structures, Pseudo-code & OS Concepts.',
     topics: ['Data Structures', 'Time Complexity', 'Bit Manipulation', 'SQL & Databases', 'Networking Basics']
   }

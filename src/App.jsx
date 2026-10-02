@@ -10,16 +10,17 @@ import FormulaDrawer from './components/FormulaDrawer';
 import AuthModal from './components/AuthModal';
 import AboutUsSection from './components/AboutUsSection';
 import BinaryBackground from './components/BinaryBackground';
+import UserProfileModal from './components/UserProfileModal';
 
 import { CATEGORIES, QUESTIONS_BANK } from './data/questionsData';
-import { 
-  Zap, 
-  Clock, 
-  Brain, 
-  Sparkles, 
-  BookOpen, 
-  Award, 
-  Play, 
+import {
+  Zap,
+  Clock,
+  Brain,
+  Sparkles,
+  BookOpen,
+  Award,
+  Play,
   CheckCircle,
   TrendingUp,
   Target,
@@ -31,7 +32,9 @@ import {
   ChevronRight,
   Code2,
   Terminal,
-  Activity
+  Activity,
+  Lock,
+  ChevronDown
 } from 'lucide-react';
 
 export default function App() {
@@ -50,6 +53,8 @@ export default function App() {
     }
   });
   const [authModalOpen, setAuthModalOpen] = useState(null); // null | 'login' | 'signup'
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [profileModalTab, setProfileModalTab] = useState('profile');
 
   // Modals & Drawers
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
@@ -77,70 +82,126 @@ export default function App() {
     localStorage.setItem('apti_theme', theme);
   }, [theme]);
 
+  // STRICT AUTH GUARD: ONLY allow 'home' and 'about' views without login!
+  // Any attempt to access 'practice', 'analytics', 'exam', or 'result' without login is blocked and triggers AuthModal.
+  useEffect(() => {
+    if (!currentUser && activeView !== 'home' && activeView !== 'about') {
+      setActiveView('home');
+      setAuthModalOpen('login');
+    }
+  }, [currentUser, activeView]);
+
+  // Auth Protection Helper
+  const requireAuth = (onSuccess) => {
+    if (!currentUser) {
+      setAuthModalOpen('login');
+      return false;
+    }
+    onSuccess();
+    return true;
+  };
+
+  // Navigation Guard Handler: ONLY 'home' and 'about' allowed without login
+  const handleNavigate = (view) => {
+    if (!currentUser && view !== 'home' && view !== 'about') {
+      setAuthModalOpen('login');
+      return;
+    }
+    setActiveView(view);
+  };
+
   const handleLoginSuccess = (userData) => {
     setCurrentUser(userData);
     localStorage.setItem('apti_user', JSON.stringify(userData));
     setAuthModalOpen(null);
   };
 
+  const handleUpdateProfile = (updatedUser) => {
+    setCurrentUser(updatedUser);
+    localStorage.setItem('apti_user', JSON.stringify(updatedUser));
+  };
+
   const handleLogout = () => {
     setCurrentUser(null);
     localStorage.removeItem('apti_user');
+    setActiveView('home');
   };
 
-  // Handle Category Selection -> Open Selector Modal
+  // Protected Action: Category Selection -> Open Selector Modal
   const handleOpenCategory = (categoryId) => {
-    setSelectedCategoryId(categoryId);
-    setTestConfigModalOpen(true);
+    requireAuth(() => {
+      setSelectedCategoryId(categoryId);
+      setTestConfigModalOpen(true);
+    });
   };
 
-  // Start Quick Grand Mock Test (all categories)
+  // Protected Action: Start Quick Grand Mock Test
   const handleStartGrandMock = () => {
-    setSelectedCategoryId('all');
-    setTestConfigModalOpen(true);
+    requireAuth(() => {
+      setSelectedCategoryId('all');
+      setTestConfigModalOpen(true);
+    });
   };
 
-  // Start Speed Run Test
+  // Protected Action: Start Speed Run Test
   const handleStartSpeedRun = () => {
-    const subset = [...QUESTIONS_BANK].sort(() => 0.5 - Math.random()).slice(0, 5);
-    const config = {
-      categoryId: 'all',
-      mode: 'speedrun',
-      difficulty: 'all',
-      questionCount: 5,
-      timeLimitMinutes: 5
-    };
-    setActiveQuestions(subset);
-    setActiveConfig(config);
-    setActiveView('exam');
+    requireAuth(() => {
+      const subset = [...QUESTIONS_BANK].sort(() => 0.5 - Math.random()).slice(0, 5);
+      const config = {
+        categoryId: 'all',
+        mode: 'speedrun',
+        difficulty: 'all',
+        questionCount: 5,
+        timeLimitMinutes: 5
+      };
+      setActiveQuestions(subset);
+      setActiveConfig(config);
+      setActiveView('exam');
+    });
+  };
+
+  // Protected Action: Open Formulas
+  const handleOpenFormulas = () => {
+    requireAuth(() => {
+      setFormulasOpen(true);
+    });
+  };
+
+  // Protected Action: Open Scratchpad
+  const handleOpenScratchpad = () => {
+    requireAuth(() => {
+      setScratchpadOpen(true);
+    });
   };
 
   // Configure and Start Test
   const handleStartTest = (config) => {
-    setTestConfigModalOpen(false);
+    requireAuth(() => {
+      setTestConfigModalOpen(false);
 
-    // Filter questions based on category and difficulty
-    let filtered = QUESTIONS_BANK;
+      // Filter questions based on category and difficulty
+      let filtered = QUESTIONS_BANK;
 
-    if (config.categoryId && config.categoryId !== 'all') {
-      filtered = filtered.filter(q => q.category === config.categoryId);
-    }
+      if (config.categoryId && config.categoryId !== 'all') {
+        filtered = filtered.filter(q => q.category === config.categoryId);
+      }
 
-    if (config.difficulty && config.difficulty !== 'all') {
-      filtered = filtered.filter(q => q.difficulty === config.difficulty);
-    }
+      if (config.difficulty && config.difficulty !== 'all') {
+        filtered = filtered.filter(q => q.difficulty === config.difficulty);
+      }
 
-    // Shuffle and pick subset
-    const shuffled = [...filtered].sort(() => 0.5 - Math.random());
-    const count = Math.min(config.questionCount || 10, shuffled.length);
-    const selected = shuffled.slice(0, count);
+      // Shuffle and pick subset
+      const shuffled = [...filtered].sort(() => 0.5 - Math.random());
+      const count = Math.min(config.questionCount || 10, shuffled.length);
+      const selected = shuffled.slice(0, count);
 
-    // Fallback if filter returned empty
-    const finalQuestions = selected.length > 0 ? selected : QUESTIONS_BANK.slice(0, 10);
+      // Fallback if filter returned empty
+      const finalQuestions = selected.length > 0 ? selected : QUESTIONS_BANK.slice(0, 10);
 
-    setActiveQuestions(finalQuestions);
-    setActiveConfig(config);
-    setActiveView('exam');
+      setActiveQuestions(finalQuestions);
+      setActiveConfig(config);
+      setActiveView('exam');
+    });
   };
 
   // Handle Test Completion
@@ -169,22 +230,28 @@ export default function App() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-primary)' }}>
-      {/* Clean Navbar: Home, Practice Quizzes, Dashboard, About Us + Streak & Log In button */}
-      <Navbar 
-        onNavigate={(view) => setActiveView(view)}
+      {/* Navbar with Strict Auth Handlers */}
+      <Navbar
+        onNavigate={handleNavigate}
         activeView={activeView}
         currentUser={currentUser}
         onOpenAuthModal={(mode) => setAuthModalOpen(mode)}
+        onOpenProfileModal={(tab = 'profile') => {
+          requireAuth(() => {
+            setProfileModalTab(tab);
+            setProfileModalOpen(true);
+          });
+        }}
         onLogout={handleLogout}
         userStats={{ streak: 1 }}
       />
 
       {/* Main View Router */}
       <main style={{ flex: 1 }}>
-        {/* HOME LANDING VIEW */}
+        {/* HOME LANDING VIEW (ALLOWED UNAUTHENTICATED) */}
         {activeView === 'home' && (
           <div className="animate-fade-in">
-            {/* HERO SECTION (SECTION 1) - CONTAINS BINARY BACKGROUND DOWN TO BOTTOM BORDER */}
+            {/* HERO SECTION */}
             <div style={{
               position: 'relative',
               padding: '4.5rem 1.5rem 4rem',
@@ -192,7 +259,7 @@ export default function App() {
               overflow: 'hidden',
               background: '#060913'
             }}>
-              {/* Crisp Monospace Binary 0 1 Stream Background - Strictly Section 1! */}
+              {/* Binary Background */}
               <BinaryBackground />
 
               {/* Hero Content Overlay */}
@@ -204,9 +271,9 @@ export default function App() {
                 textAlign: 'center'
               }}>
                 {/* Main Headline */}
-                <h1 style={{ 
-                  fontSize: '3.6rem', 
-                  fontWeight: 800, 
+                <h1 style={{
+                  fontSize: '3.6rem',
+                  fontWeight: 800,
                   letterSpacing: '-1.2px',
                   lineHeight: '1.1',
                   marginBottom: '1rem',
@@ -218,9 +285,9 @@ export default function App() {
                 </h1>
 
                 {/* Sub-headline */}
-                <p style={{ 
-                  fontSize: '1.25rem', 
-                  color: '#94a3b8', 
+                <p style={{
+                  fontSize: '1.25rem',
+                  color: '#94a3b8',
                   marginBottom: '2rem',
                   lineHeight: '1.6',
                   maxWidth: '700px',
@@ -230,14 +297,14 @@ export default function App() {
                   Test your quantitative logic, reasoning accuracy, speed, and answering power with instant score diagnostics.
                 </p>
 
-                {/* Large White Hero CTA Button */}
+                {/* Large White Hero CTA Button (Requires Auth!) */}
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', marginBottom: '3rem' }}>
-                  <button 
-                    onClick={handleStartGrandMock} 
+                  <button
+                    onClick={handleStartGrandMock}
                     className="btn btn-hero-white"
                   >
-                    <Zap size={22} color="#0078d4" fill="#0078d4" />
-                    <span>Start Free Quiz Now</span>
+                    {!currentUser ? <Lock size={20} color="#0078d4" /> : <Zap size={22} color="#0078d4" fill="#0078d4" />}
+                    <span>{!currentUser ? 'Log In to Take Quiz' : 'Start Quiz Now'}</span>
                   </button>
 
                   <div style={{ fontSize: '0.8rem', color: '#64748b', display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -329,7 +396,62 @@ export default function App() {
               </div>
             </div>
 
-            {/* DOMAINS PRACTICE GRID SECTION (Clean solid dark background) */}
+            {/* MIDDLE GLOWING CTA BANNER */}
+            <div
+              style={{
+                maxWidth: '960px',
+                margin: '3rem auto 1rem',
+                padding: '2.25rem 2.5rem',
+                borderRadius: '14px',
+                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(0, 120, 212, 0.35) 50%, rgba(124, 58, 237, 0.25) 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 15px 40px rgba(0, 0, 0, 0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '1.5rem',
+                position: 'relative',
+                zIndex: 2,
+                backdropFilter: 'blur(12px)'
+              }}
+            >
+              <div>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#ffffff', letterSpacing: '-0.3px', marginBottom: '0.25rem' }}>
+                  Start practicing aptitude quizzes for free
+                </h3>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.65rem' }}>
+                <p style={{ fontSize: '0.875rem', color: '#e2e8f0', fontWeight: 500 }}>
+                  No trial. No credit card required. Free account access.
+                </p>
+
+                <button
+                  onClick={handleStartGrandMock}
+                  style={{
+                    padding: '0.55rem 1.15rem',
+                    fontSize: '0.875rem',
+                    fontWeight: 700,
+                    background: 'rgba(15, 23, 42, 0.85)',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    color: '#ffffff',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  className="btn-secondary-dark"
+                >
+                  <span>{!currentUser ? 'Log In to Try Free' : 'Try Free'}</span>
+                  <ChevronDown size={14} />
+                </button>
+              </div>
+            </div>
+
+            {/* DOMAINS PRACTICE GRID SECTION */}
             <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3.5rem 1.5rem', position: 'relative', zIndex: 2 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
                 <div>
@@ -348,7 +470,7 @@ export default function App() {
                 {CATEGORIES.map(cat => {
                   const count = QUESTIONS_BANK.filter(q => q.category === cat.id).length;
                   return (
-                    <CategoryCard 
+                    <CategoryCard
                       key={cat.id}
                       category={cat}
                       questionCount={count}
@@ -359,7 +481,7 @@ export default function App() {
               </div>
 
               {/* Quick Formula Drawer Banner */}
-              <div 
+              <div
                 className="glass-panel"
                 style={{
                   marginTop: '3rem',
@@ -380,7 +502,7 @@ export default function App() {
                     Access our curated formula cheat sheet for Speed-Distance, Profit & Loss, Work & Time, and Combinatorics.
                   </p>
                 </div>
-                <button onClick={() => setFormulasOpen(true)} className="btn btn-vscode-blue" style={{ padding: '0.75rem 1.25rem' }}>
+                <button onClick={handleOpenFormulas} className="btn btn-vscode-blue" style={{ padding: '0.75rem 1.25rem' }}>
                   <BookOpen size={18} />
                   <span>Open Formula Sheet</span>
                 </button>
@@ -389,8 +511,13 @@ export default function App() {
           </div>
         )}
 
-        {/* PRACTICE QUIZZES VIEW */}
-        {activeView === 'practice' && (
+        {/* ABOUT US VIEW (ALLOWED UNAUTHENTICATED) */}
+        {activeView === 'about' && (
+          <AboutUsSection onStartPractice={handleStartGrandMock} />
+        )}
+
+        {/* PRACTICE QUIZZES VIEW (PROTECTED - REQUIRES LOGIN) */}
+        {activeView === 'practice' && currentUser && (
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2.5rem 1.5rem' }} className="animate-fade-in">
             <div style={{ marginBottom: '2rem' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#38bdf8' }}>CATALOGUE</span>
@@ -406,7 +533,7 @@ export default function App() {
               {CATEGORIES.map(cat => {
                 const count = QUESTIONS_BANK.filter(q => q.category === cat.id).length;
                 return (
-                  <CategoryCard 
+                  <CategoryCard
                     key={cat.id}
                     category={cat}
                     questionCount={count}
@@ -418,35 +545,30 @@ export default function App() {
           </div>
         )}
 
-        {/* ABOUT US VIEW */}
-        {activeView === 'about' && (
-          <AboutUsSection onStartPractice={handleStartGrandMock} />
-        )}
-
-        {/* ACTIVE EXAM VIEW */}
-        {activeView === 'exam' && (
-          <ExamInterface 
+        {/* ACTIVE EXAM VIEW (PROTECTED - REQUIRES LOGIN) */}
+        {activeView === 'exam' && currentUser && (
+          <ExamInterface
             questions={activeQuestions}
             config={activeConfig}
             onFinishTest={handleFinishTest}
-            onOpenScratchpad={() => setScratchpadOpen(true)}
-            onOpenFormulas={() => setFormulasOpen(true)}
+            onOpenScratchpad={handleOpenScratchpad}
+            onOpenFormulas={handleOpenFormulas}
             soundEnabled={true}
           />
         )}
 
         {/* TEST RESULT VIEW */}
         {activeView === 'result' && lastResult && (
-          <ResultSummary 
+          <ResultSummary
             result={lastResult}
-            onRetakeTest={() => setActiveView('exam')}
+            onRetakeTest={() => requireAuth(() => setActiveView('exam'))}
             onGoHome={() => setActiveView('home')}
           />
         )}
 
-        {/* ANALYTICS DASHBOARD VIEW */}
-        {activeView === 'analytics' && (
-          <AnalyticsDashboard 
+        {/* ANALYTICS DASHBOARD VIEW (PROTECTED - REQUIRES LOGIN) */}
+        {activeView === 'analytics' && currentUser && (
+          <AnalyticsDashboard
             testHistory={testHistory}
             onClearHistory={handleClearHistory}
             onGoHome={() => setActiveView('home')}
@@ -454,9 +576,21 @@ export default function App() {
         )}
       </main>
 
+      {/* Profile & Certificate Settings Modal */}
+      {profileModalOpen && currentUser && (
+        <UserProfileModal
+          initialTab={profileModalTab}
+          user={currentUser}
+          onUpdateProfile={handleUpdateProfile}
+          onClose={() => setProfileModalOpen(false)}
+          testHistory={testHistory}
+          onClearHistory={handleClearHistory}
+        />
+      )}
+
       {/* Auth Modal Popup (Log In / Register) */}
       {authModalOpen && (
-        <AuthModal 
+        <AuthModal
           initialMode={authModalOpen}
           onClose={() => setAuthModalOpen(null)}
           onLoginSuccess={handleLoginSuccess}
@@ -464,8 +598,8 @@ export default function App() {
       )}
 
       {/* Test Mode Configuration Modal */}
-      {testConfigModalOpen && (
-        <TestModeSelectorModal 
+      {testConfigModalOpen && currentUser && (
+        <TestModeSelectorModal
           selectedCategoryId={selectedCategoryId}
           onClose={() => setTestConfigModalOpen(false)}
           onStartTest={handleStartTest}
@@ -473,15 +607,15 @@ export default function App() {
       )}
 
       {/* Interactive Scratchpad */}
-      {scratchpadOpen && (
-        <ScratchpadModal 
+      {scratchpadOpen && currentUser && (
+        <ScratchpadModal
           onClose={() => setScratchpadOpen(false)}
         />
       )}
 
       {/* Formula Cheat Sheet */}
-      {formulasOpen && (
-        <FormulaDrawer 
+      {formulasOpen && currentUser && (
+        <FormulaDrawer
           onClose={() => setFormulasOpen(false)}
         />
       )}
